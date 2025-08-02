@@ -13,11 +13,12 @@ const generateAccessAndRefreshToken = async(userId)=>
 
             user.refreshToken = refreshToken;
             await  user.save({ validateBeforeSave: false });
+            return {accessToken, refreshToken}
             
         } catch (error) {
             throw new ApiError(500,"Something went wrong while generating refresh and access token")
         }
-       return {accessToken, refreshToken}
+
 }
 
 const registerUser = asyncHandler(async(req,res)=>{
@@ -110,16 +111,20 @@ const loginUser = asyncHandler(async(req,res)=>{
      .cookie("accessToken",accessToken, options)
      .cookie("refreshToken",refreshToken,options)
      .json(
-        new ApiResponse(200,{
-            user: loggedInUser, accessToken, refreshToken
-        }
-        "User logged in successfully"
+        new ApiResponse(200,
+            {user: loggedInUser, accessToken, refreshToken},
+             "User logged in successfully"
     )
      )
+
+})
+
+const logoutUser = asyncHandler(async(req,res)=>{
 
 })
 
 export {
     registerUser,
     loginUser,
+    logoutUser
 };
